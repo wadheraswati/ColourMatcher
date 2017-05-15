@@ -9,7 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @interface ViewController : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource>
-
+{
+    NSMutableArray *cards;
+    NSMutableArray *winCards;
+    
+    NSString *lastCard;
+}
 @property (nonatomic, strong) UICollectionView *matrix;
 
 @end

@@ -18,6 +18,7 @@
     
     self.navigationItem.title = @"Main";
     [self.navigationController setNavigationBarHidden:YES];
+    
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.minimumInteritemSpacing = 5;
     layout.minimumLineSpacing = 5;
@@ -31,8 +32,27 @@
     [self.matrix registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"matrixCell"];
     [self.view addSubview:self.matrix];
     
+    winCards = [NSMutableArray array];
+    cards = [NSMutableArray array];
+    for(int i = 1; i <= 8; i++){
+        [cards addObject:[NSString stringWithFormat:@"colour%d",i]];
+    }
+    
+    [cards addObjectsFromArray:cards];
+    cards = [self shuffleElements:cards];
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+}
+
+- (NSMutableArray *)shuffleElements:(NSMutableArray *)items {
+    
+    for (int x = 0; x < [items count]; x++) {
+        int randInt = (arc4random() % ([items count] - x)) + x;
+        [items exchangeObjectAtIndex:x withObjectAtIndex:randInt];
+    }
+    
+    return items;
 }
 
 #pragma mark UICollectionView Data Source & Delegate
@@ -46,10 +66,72 @@
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"matrixCell" forIndexPath:indexPath];
     
     cell.backgroundColor = [UIColor purpleColor];
+    
+    for(UIView *subview in cell.subviews)
+        [subview removeFromSuperview];
+    //UIImageView *imgV = (UIImageView *)[cell viewWithTag:343];
+    //{
+        UIImageView *imgV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:cards[indexPath.row]]];
+        [imgV setFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height)];
+        [imgV setTag:343];
+        [cell addSubview:imgV];
+    //}
+    
+    [imgV setHidden:YES];
+    cell.userInteractionEnabled = YES;
+    
+//    if([winCards containsObject:cards[indexPath.row]])
+//    {
+//        cell.userInteractionEnabled = NO;
+//        [imgV setHidden:NO];
+//    }
+//    else
+//    {
+//        cell.userInteractionEnabled = YES;
+//        [imgV setHidden:YES];
+//    }
+    
     return cell;
 }
 
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    UIImageView * imgView = (UIImageView *)[cell viewWithTag:343];
+    [imgView setImage:nil];
+}
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    UIImageView *imgV = (UIImageView *)[cell viewWithTag:343];
+   
+    [UIView animateWithDuration:0.5 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^(void) {
+                         cell.transform = CGAffineTransformMakeScale(-1, 1);
+                        }
+                     completion:^(BOOL success){
+                         [imgV setHidden:NO];
+                         [imgV setUserInteractionEnabled:NO];
+                         if(!lastCard){
+                             lastCard = cards[indexPath.row];
+                         }
+                         else
+                         {
+                             if([cards[indexPath.row] isEqualToString:lastCard])
+                             {
+                                 [winCards addObject:lastCard];
+                             }
+                             else
+                             {
+                                 [collectionView performSelector:@selector(reloadData) withObject:nil afterDelay:1];
+                             }
+                             lastCard = nil;
+                             
+                         }
+
+                     }];
+    
+    
+    
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
 }
 
