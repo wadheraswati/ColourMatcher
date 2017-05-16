@@ -110,27 +110,25 @@
                         }
                      completion:^(BOOL success){
                          [imgV setHidden:NO];
-                         [imgV setUserInteractionEnabled:NO];
-                         if(!lastCard){
-                             lastCard = cards[indexPath.row];
-                         }
-                         else
-                         {
-                             if([cards[indexPath.row] isEqualToString:lastCard])
-                             {
-                                 [winCards addObject:lastCard];
-                             }
-                             else
-                             {
-                                 [collectionView performSelector:@selector(reloadData) withObject:nil afterDelay:1];
-                             }
-                             lastCard = nil;
-                             
-                         }
-
+                         [cell setUserInteractionEnabled:NO];
                      }];
     
-    
+    if(!lastCard){
+        lastCard = cards[indexPath.row];
+    }
+    else
+    {
+        if([cards[indexPath.row] isEqualToString:lastCard])
+        {
+            [winCards addObject:lastCard];
+        }
+        else
+        {
+            [collectionView performSelector:@selector(reloadData) withObject:nil afterDelay:1];
+        }
+        lastCard = nil;
+        
+    }
     
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
 }
