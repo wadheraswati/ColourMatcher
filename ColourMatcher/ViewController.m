@@ -104,11 +104,6 @@
     return cell;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    UIImageView * imgView = (UIImageView *)[cell viewWithTag:343];
-    [imgView setImage:nil];
-}
-
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
@@ -134,8 +129,7 @@
             winCards = winCards + 1;
             if(winCards == 8)
             {
-                [[DBManager sharedManager] saveScore:score withName:@"Swati"];
-                [self performSelector:@selector(showSuccessAlert) withObject:nil afterDelay:1];
+                [self performSelector:@selector(showSuccessAlert) withObject:nil afterDelay:2];
             }
         }
         else
@@ -243,6 +237,8 @@
 }
 
 - (void)resetBoard {
+    [self updateScore];
+    cards = [self shuffleElements:cards];
     [self.matrix reloadData];
     score = 0;
 }

@@ -69,7 +69,7 @@
 - (NSMutableArray *)getScores {
     [self openDB];
     
-    const char *sql = "SELECT * from scores order by score desc";
+    const char *sql = "SELECT * from scores order by score desc limit 10";
     sqlite3_stmt *sqlStatement;
     if(sqlite3_prepare(db, sql, -1, &sqlStatement, NULL) != SQLITE_OK)
     {
