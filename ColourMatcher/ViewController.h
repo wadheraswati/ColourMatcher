@@ -7,13 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HighScoreViewController.h"
+#import "DBManager.h"
+#import "CNPPopupController.h"
 
-@interface ViewController : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource>
+@interface ViewController : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource, CNPPopupControllerDelegate>
 {
     NSMutableArray *cards;
-    NSMutableArray *winCards;
     
+    UILabel *scoreLbl;
+    CNPPopupController *popupController;
     NSString *lastCard;
+    NSUInteger score;
+    NSUInteger winCards;
 }
 @property (nonatomic, strong) UICollectionView *matrix;
 
